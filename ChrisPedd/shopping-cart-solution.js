@@ -55,6 +55,7 @@ var item4 = shoppingCart.add({description: "Monsters Eat Whiny Children",
 
 shoppingCart.remove(item3, 6);
 shoppingCart.remove(item4, 1);
+shoppingCart.remove(item4, 1);
 
 console.log(shoppingCart.list());
 
