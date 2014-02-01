@@ -15,12 +15,14 @@ var cashRegister = {
 			if (thingType !== 'string' && thingType !== 'object' && thingType !== 'boolean') {
 			this.cash.push(thing*-1);
 			}
-		}
-		,
-		//Total lists cash as undefined. I'm trying to store my additions to the array. What am I doing wrong?
-	total: this.cash.reduce(function(a, b) {
-    		return a + b;
-    })
+		},
+	total: function () {
+  	var sum = 0;
+  	this.cash.forEach(function (thing) {
+  		sum += thing;
+  	});
+  	return sum;
+  }
   
 };
 

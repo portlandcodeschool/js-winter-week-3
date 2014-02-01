@@ -1,30 +1,49 @@
 var shoppingCart = {
   // implement me!
   cart: [],
+  itemIdIndex: 0,
   add: function (thing) {
 			if (thing) {
 			this.cart.push(thing);
 			}
+      return thing;
 		}
   ,
-  remove: function (thing) {
-				var index = this.cart.indexOf(thing)
-				if (index >= 0) {
-					this.cart.splice(index, 1);
-				}
-			}
+  remove: function (thing, removeHowMany) {
+    var i = -1;
+
+    this.cart.forEach(function (item, index) {
+      if(item === thing)
+        i = index;
+    });
+        if (i === -1) throw new Error("Item not found in shopping cart!");
+        //now this.stuff[i] is the item we want to remove
+
+        if (this.cart[i].count <= removeHowMany) {
+          this.cart.splice(i, 1); //remove this item from the shopping cart!
+        } else {
+          this.cart[i].count -= removeHowMany;
+        }
+      }
   ,
   //Count shows as undefined. Is this because it's declared outside of the object? How do I reference the varialbe
   //stored outside the object?
   list: function () {
-  			this.cart.forEach(function (thing) {
-  				console.log(this.cart.count + ' x ' + this.cart.description);
+        var outputStr = "";
+
+  			this.cart.forEach(function (item) {
+  				outputStr += item.count + ' x ' + item.description + ' at ' + item.price + ' each. '
   			});
+        return outputStr
   		},
-  //cash is showing as undefined. How do I reference the array that I've added my totals to outside of the object?
-  total: this.cash.reduce(function(a, b) {
-    		return a + b;
-    })
+
+  total: function () {
+    var sum = 0;
+      this.cart.forEach(function (item) {
+      sum += item.count * item.price;
+    });
+      return sum;
+  }
 };
 
 var item1 = shoppingCart.add({description: "Huggies Little Snugglers Diapers",
@@ -45,6 +64,7 @@ var item4 = shoppingCart.add({description: "Monsters Eat Whiny Children",
 
 shoppingCart.remove(item3, 6);
 shoppingCart.remove(item4, 1);
+
 
 console.log(shoppingCart.list());
 
