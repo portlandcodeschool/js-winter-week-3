@@ -1,10 +1,3 @@
-//TO DO LIST:
-//[x] 1. add additional functions for logging the arrays and culling arrays for to make pretty code
-//[ ] 2. add nicer console.log()'s for to make shell use pretty
-//[x] 3. start using ternary operators for practice
-//[ ] 4. add comment/remark field for new Appointment ()
-//[x] 5. add AppointmentBook.prototype.sort()
-
 "use strict" //so I don't reference our dear mother object who looks down upon us all...
 
 var idCount = 101 //Keeping the eventId simple
@@ -21,10 +14,10 @@ function Appointment (description, location, attendees, date) {
 
 function AppointmentBook () {
     this.upcoming = [];
-    this.logCull = function (yarrrrr) { //logs an array in a function, culls it later, yarrrrr is shorthand for your array, right?
+    this.logCull = function (yarrrrr) { //logs an array, culls it later
 	    yarrrrr.forEach (function (thing) {
-	    console.log(thing.eventId, thing.description, thing.location, thing.dateWhen.toDateString() )
-	  	} );
+	    	console.log("\tEvent #" +thing.eventId+ ", " +thing.dateWhen.toDateString()+ "\nDescription: " +thing.description+ "\nLocation: " +thing.location+ "\nAttending: " +thing.attendees.join(', '));
+	  	});
 	  
 	  	var cull = yarrrrr.length;
 	  	for (var i = 0; i<cull; i++) yarrrrr.pop();
@@ -64,8 +57,9 @@ AppointmentBook.prototype.reschedule = function(itemId, newTime) {
 };
 
 AppointmentBook.prototype.list = function() {
+  console.log("\n--- Upcoming Events ---")
   this.upcoming.forEach (function (thing) {
-  	console.log(thing.eventId, thing.description, thing.location, thing.dateWhen.toDateString());
+  	console.log("\tEvent #" +thing.eventId+ ", " +thing.dateWhen.toDateString()+ "\nDescription: " +thing.description+ "\nLocation: " +thing.location+ "\nAttending: " +thing.attendees.join(', '));
   })
  };
 
@@ -74,9 +68,11 @@ AppointmentBook.prototype.list = function() {
 AppointmentBook.prototype.dateOf = function(dateSelect) {
   var dateTemp = (new Date(dateSelect)).toDateString(),
       dateOfArr = [];  
-  for (var i = 0; i < this.upcoming.length; i++) { //populate a temporary array from the master upcoming array
+  for (var i = 0; i < this.upcoming.length; i++) { //populate a temporary array
     dateTemp === this.upcoming[i].dateWhen.toDateString() ? dateOfArr.push(this.upcoming[i]) : null;
   }
+  
+  console.log("\n--- Showing event(s) on " +dateTemp+ " ---");
   this.logCull(dateOfArr);
 };
 
@@ -89,7 +85,7 @@ AppointmentBook.prototype.upcomingRange = function(rangeStart, rangeLimit) {
     var dateTemp = Date.parse(this.upcoming[i].dateWhen); //parse upcoming dates, condition them, add to temp array
     (dateTemp >= start && dateTemp <= end) ? upcomingArr.push(this.upcoming[i]) : null;
   }  
-  
+  console.log("\n--- Showing all events between " +(new Date(rangeStart)).toDateString()+ " and " +(new Date(rangeLimit)).toDateString()+ " ---");
   this.logCull(upcomingArr);
 };
 
@@ -98,7 +94,7 @@ AppointmentBook.prototype.inMonth = function(month, year) {
       monthNum = month,
       monthArr = [];
 
-  if (typeof year !== 'number') throw new Error("Passive aggressive error message about lack of proper year syntax.")
+  if (typeof year !== 'number') throw new Error("Passive aggressive error message about lack of proper year syntax.");
   
   if (typeof month === 'string') { //convert string to be equivalent to the .getMonth() method
     for (var i = 0; i < months.length && month === months[i]; i++) {
@@ -111,18 +107,18 @@ AppointmentBook.prototype.inMonth = function(month, year) {
         yearTemp = this.upcoming[i].dateWhen.getFullYear();
     (monthTemp === monthNum && year === yearTemp) ? monthArr.push(this.upcoming[i]) : null;
   }
-  
+  console.log("\n--- Showing all events on " +months[monthNum]+ " " +year+ " ---");
   this.logCull(monthArr);
 };
 
-AppointmentBook.prototype.sort = function() {
+AppointmentBook.prototype.sortByDate = function() {
 	this.upcoming.sort(function (a, b) {
-	  return a.dateWhen - b.dateWhen; //HOLY HELL, Date() automatically parses for you when using the maths!
+	  return a.dateWhen - b.dateWhen; //HOLY HELL!!!, Date() automatically parses for you when using the maths!
 	})
 };
 
 ///////////////////////////////////////////// DO STUFF //////////////////////////////////////////
-
+console.log("========== DOING STUFF ==========\n\n")
 var aBook = new AppointmentBook;
 var events = [new Appointment("Lunch with Josie", "Lardo", ["Chris", "Josie"], "February 09, 2013, 12:45:00"),
           	  new Appointment("Dinner Date with Lindsey", "A Very Fancy Restaurant", ["Chris", "Lindsey",], "January 14, 2014, 17:30:00"),
@@ -138,15 +134,16 @@ var events = [new Appointment("Lunch with Josie", "Lardo", ["Chris", "Josie"], "
               new Appointment("Sign some Oath","Tennis Court",["Third Estate"],"June 20, 1789 11:00:00"),
               new Appointment("Give Speech: Arming the Citizens","Palais Royale",["Camille Desmoulins", "Potential Militia"],"July 12, 1789 16:00:00"),
               new Appointment("Storm an Armory","Bastille",["Rebels", "Militia"],"July 14, 1789 13:00:00"),
+              //new Appointment("description","location",["attending", "as an array"],"Date()"),
         	 ];
 
 events.forEach(function (event) { aBook.add(event) });
-// aBook.cancel(102);
-// aBook.reschedule(101, "January 29, 2014, 08:00:00");
-// aBook.list()
-// console.log("\n")
-// aBook.dateOf("February 2, 2014")
-// console.log("\n")
-// aBook.upcomingRange("June 19, 1789", "July 14, 1789, 23:00:00")
-// console.log("\n")
-// aBook.inMonth("January", 2014)
+aBook.sortByDate();
+aBook.cancel(102);
+aBook.reschedule(101, "January 29, 2014, 08:00:00");
+aBook.list()
+aBook.dateOf("February 2, 2014")
+aBook.upcomingRange("June 19, 1789", "July 14, 1789, 23:00:00")
+aBook.inMonth("January", 2014)
+
+
