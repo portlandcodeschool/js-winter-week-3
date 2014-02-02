@@ -10,16 +10,22 @@ var shoppingCart = {
     	return pli.key;
 	},
 	remove: function(itemKey, qty) {
-		this.basket.forEach(function(item, index, array) {
-			if(item.key === itemKey){
-				//found the item, now adjust the qty
-				if (qty >= item.count) {
-		          array.splice(index, 1);
-		        } else {
-		          item.count -= qty;
-		        }
-			}
-		})
+		//for(var i = this.basket.length - 1; this.basket[i].key !== itemKey && i >=0; i--);
+		//if(i === -1) throw new Error("Item not found in shopping cart!");
+
+		var i = -1;
+		this.basket.forEach(function (item, index) {
+			if (item.key === itemKey)
+				i = index;
+			});
+	  	if (i === -1) throw new Error("Item not found in shopping cart!");
+
+
+		if(this.basket[i].count <= qty){
+			this.basket.splice(i, 1);
+		} else{
+			this.basket[i].count -= qty;
+		}
 	},
 	list: function() {
 		var cart = [];
