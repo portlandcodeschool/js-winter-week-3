@@ -46,6 +46,37 @@ AppointmentBook.prototype.list = function () {
   return outputString
 }
 
+AppointmentBook.prototype.searchDate = function (search) {
+  var searchResults = [];
+  var searchDate = new Date(search);
+  this.appointments.forEach(function (appt, index) {
+    if (appt.date.getDate() === searchDate.getDate() && appt.date.getMonth() === searchDate.getMonth() && appt.date.getFullYear() === searchDate.getFullYear())
+      searchResults.push(appt);
+  })
+  return searchResults;
+}
+
+AppointmentBook.prototype.searchDateRange = function (start, end) {
+  var searchResults = [];
+  var startDate = new Date(start);
+  var endDate = new Date(end)
+  this.appointments.forEach(function (appt, index) {
+    if (appt.date >= startDate && appt.date <= endDate)
+      searchResults.push(appt);
+  })
+  return searchResults;
+}
+
+AppointmentBook.prototype.searchMonth = function (search) {
+  var searchResults = [];
+  var searchDate = new Date(search);
+  this.appointments.forEach(function (appt, index) {
+    if (appt.date.getMonth() === searchDate.getMonth() && appt.date.getFullYear() === searchDate.getFullYear())
+      searchResults.push(appt);
+  })
+  return searchResults;
+}
+
 var appt1 = new Appointment("Taking out the trash", "Side door", "January 27, 2014, 9:00 pm", ["Andrew", "Autumn"])
 
 //appt2 checking to see if it will still create an instance of Appointment w/o 'new'
@@ -66,3 +97,25 @@ apptBook.reschedule(apptBook.appointments[1].id, "March 12, 2014, 8:00 pm");
 
 //now listing the appointments
 console.log(apptBook.list());
+
+// adding some more appointments
+
+var moreAppointments = [new Appointment("JavaScript Class 1", "Burnside Digital", "February 3, 2014, 6:00 pm", ["Andrew", "Everybody else in JS class"]),
+                        new Appointment("JavaScript Class 2", "Burnside Digital", "February 5, 2014, 6:00 pm", ["Andrew", "Everybody else in JS class"]),
+                        new Appointment("Tour with Crowd Compass", "Crowd Compass Offices, 2505 SE 11th Ave. suite 300", "February 7, 2014, 12:00 pm", ["Andrew", "Everybody else in fall PCS"]),
+                        new Appointment("Raking the Leaves", "Front Yard", "February 21, 2014, 5:00 pm", ["Andrew", "Autumn", "Leora", "Will"])]
+
+moreAppointments.forEach(function (appt) {
+  apptBook.add(appt);
+});
+
+
+//testing the single date search
+console.log(apptBook.searchDate('02/03/2014'))
+
+//testing the date range search
+console.log(apptBook.searchDateRange('01/01/2014', 'January 31, 2014, 10:00 pm'));
+
+//testing the month search
+console.log(apptBook.searchMonth('February 2014'));
+
