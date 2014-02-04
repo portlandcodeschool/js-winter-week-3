@@ -17,6 +17,7 @@ var cashRegister = {
   	return this.currentTotal;
   	},
   total : function () {
+    return this.currentTotal;
   	console.log(this.currentTotal);  // this is for my own testing
   	}
 };
