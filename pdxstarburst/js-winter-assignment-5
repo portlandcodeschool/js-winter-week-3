@@ -1,0 +1,27 @@
+//Jenna Gretsch
+// PCS Wk 3, Monday Homework
+//Assignment #5, Cash Register
+
+
+var cashRegister = {
+  	cart: 0,
+  	add:  function (num) {    //add > key, value is function
+    	this.cart = this.cart + num;
+    },
+    
+    subtract: function (num) {
+    	this.cart = this.cart - num;
+
+    },
+
+    total:  function () {
+    	return this.cart;
+    }
+};    
+
+cashRegister.add(1.25);
+cashRegister.add(3.63);
+cashRegister.add(4.99);
+cashRegister.subtract(1.15);
+
+console.log("Your total is " + cashRegister.total());
