@@ -55,7 +55,7 @@ AppointmentBook.prototype.listOnDate = function (dateToList) {
 	this.appts.forEach(function (object, index){
 		var formattedDate = "";
 		formattedDate += (object.date.getMonth() + 1) + "/" + object.date.getDate() + "/" + object.date.getFullYear();
-		if (formatDate(object) === dateToList){
+		if (formattedDate === dateToList){
 			matches.push(object);
 		}
 	});
