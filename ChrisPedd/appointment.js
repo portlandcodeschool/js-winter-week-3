@@ -14,24 +14,24 @@ function Appointment (description, location, attendees, date) {
 
 function AppointmentBook () {
     this.upcoming = [];
-    this.logCull = function (yarrrrr) { //logs an array, culls it later
+    //logs an temporary array, culls it
+    this.logCull = function (yarrrrr) {
 	    yarrrrr.forEach (function (thing) {
 	    	console.log("\tEvent #" +thing.eventId+ ", " +thing.dateWhen.toDateString()+ "\nDescription: " +thing.description+ "\nLocation: " +thing.location+ "\nAttending: " +thing.attendees.join(', '));
 	  	});
 	  
 	  	var cull = yarrrrr.length;
 	  	for (var i = 0; i<cull; i++) yarrrrr.pop();
-	};
-  };
+	  };
+};
 
-///////////////////////////////////////////// PROTOTYPE FUNCTIONS //////////////////////////////////////////
-
+//adds an appointment, super serious function
 AppointmentBook.prototype.add = function (obj) {
   this.upcoming.push(obj);
   var i = this.upcoming.length - 1;
-  //console.log("--- Added event " +this.upcoming[i].eventId+ ", " +this.upcoming[i].description+ " ---");
 };
 
+//deletes an appointment based upon index number
 AppointmentBook.prototype.cancel = function(itemId) {
 	var ind = -1;
 	this.upcoming.forEach(function (item, index) {
@@ -44,6 +44,7 @@ AppointmentBook.prototype.cancel = function(itemId) {
 	}
  };
 
+//reschedules an appointment, also super serious
 AppointmentBook.prototype.reschedule = function(itemId, newTime) {
 	var ind = -1;
 	this.upcoming.forEach(function (item, index) {
@@ -56,6 +57,7 @@ AppointmentBook.prototype.reschedule = function(itemId, newTime) {
 	}
 };
 
+//spits out the upcoming array of appointments, makes it look pretty in the console
 AppointmentBook.prototype.list = function() {
   console.log("\n--- Upcoming Events ---")
   this.upcoming.forEach (function (thing) {
@@ -63,12 +65,11 @@ AppointmentBook.prototype.list = function() {
   })
  };
 
- ///////////////////////////////////////////// ADVANCED //////////////////////////////////////////
-
+//finds appointments within the same day, .toDateString() is pure sex
 AppointmentBook.prototype.dateOf = function(dateSelect) {
   var dateTemp = (new Date(dateSelect)).toDateString(),
       dateOfArr = [];  
-  for (var i = 0; i < this.upcoming.length; i++) { //populate a temporary array
+  for (var i = 0; i < this.upcoming.length; i++) {
     dateTemp === this.upcoming[i].dateWhen.toDateString() ? dateOfArr.push(this.upcoming[i]) : null;
   }
   
@@ -76,19 +77,21 @@ AppointmentBook.prototype.dateOf = function(dateSelect) {
   this.logCull(dateOfArr);
 };
 
+//finds appointments within a specified range
 AppointmentBook.prototype.upcomingRange = function(rangeStart, rangeLimit) {
-  var start = Date.parse(new Date(rangeStart)), //from arguments, parse to lovely whole numbers
-      end = Date.parse(new Date(rangeLimit)),
+  var start = new Date(rangeStart),
+      end = new Date(rangeLimit),
       upcomingArr = [];
   
   for (var i = 0; i < this.upcoming.length; i++) {
-    var dateTemp = Date.parse(this.upcoming[i].dateWhen); //parse upcoming dates, condition them, add to temp array
+    var dateTemp = this.upcoming[i].dateWhen;
     (dateTemp >= start && dateTemp <= end) ? upcomingArr.push(this.upcoming[i]) : null;
   }  
   console.log("\n--- Showing all events between " +(new Date(rangeStart)).toDateString()+ " and " +(new Date(rangeLimit)).toDateString()+ " ---");
   this.logCull(upcomingArr);
 };
 
+//finds appointments by month/year; month can be a string or number
 AppointmentBook.prototype.inMonth = function(month, year) {
   var months = ["January","February","March","April","May","June","July","August","September","October","November","December"],
       monthNum = month,
@@ -96,10 +99,10 @@ AppointmentBook.prototype.inMonth = function(month, year) {
 
   if (typeof year !== 'number') throw new Error("Passive aggressive error message about lack of proper year syntax.");
   
-  if (typeof month === 'string') { //convert string to be equivalent to the .getMonth() method
-    for (var i = 0; i < months.length && month === months[i]; i++) {
-      monthNum = i;
-    };
+  if (typeof month === 'string') {
+  	for (var i = 0; months[i] !== month && i <= 11; i++); 
+    //for (var i = 0; i <= 11 && month === months[i]; i++) {
+    monthNum = i;
   }
   
   for (var i = 0; i < this.upcoming.length; i++) { //convert to more digestable variables, push to array
@@ -111,6 +114,7 @@ AppointmentBook.prototype.inMonth = function(month, year) {
   this.logCull(monthArr);
 };
 
+//Sorts by day.
 AppointmentBook.prototype.sortByDate = function() {
 	this.upcoming.sort(function (a, b) {
 	  return a.dateWhen - b.dateWhen; //HOLY HELL!!!, Date() automatically parses for you when using the maths!
