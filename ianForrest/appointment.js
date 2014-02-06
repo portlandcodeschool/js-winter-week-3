@@ -17,27 +17,17 @@
 // reschedule an existing appointment for a new time
 // list all existing appointments
 
-function AppointmentBook (apptEvent, apptLocation, apptDate, apptAttendees) {
+function AppointmentBook (apptEvent, apptLocation, year, month, day, apptAttendees) {
 	this.apptEvent = apptEvent;
 	this.apptLocation = apptLocation;
-	this.apptDate = apptDate;
+	this.apptDate = new Date(year, month, day);
 	this.apptAttendees = apptAttendees;
 }
 
-AppointmentBook.prototype.getId = function () {
-  this.id = Math.floor(Math.random() * 10000);
-  return this.id;
-};
-
-AppointmentBook.prototype.reschedule = function (newDate) {
-	newDate = this.apptDate.replace(newDate); };
-
 var appointmentMaker = {
 	appointments: [],
-	itemIdIndex: 0,
-  	
+	
   	add: function (thing) {
-    thing.id = this.itemIdIndex++;
     this.appointments.push(thing);    },
 
     cancel: function (eventName) {
@@ -49,11 +39,10 @@ var appointmentMaker = {
     this.appointments.splice(i, 1);
     },
 
-    reschedule: function (eventName, eventTime) {
-    var i = -1;
+    reschedule: function (eventName, eventYear, eventMonth, eventDay) {
 	this.appointments.forEach(function (item, index) {
 		if (eventName === item.apptEvent) {
-			item.apptDate = eventTime;
+			item.apptDate = new Date(eventYear, eventMonth, eventDay);
 		} 
 		});
 	},
@@ -65,27 +54,29 @@ var appointmentMaker = {
 	}); }, 
 };
 
+
+
 homework = appointmentMaker.add(new AppointmentBook(
 	"Homework", 
 	"Albina Press", 
-	"Feb. 1, 10 a.m.", 
+	2014, 1, 3, 
 	"Ian"
 	));
 futsal = appointmentMaker.add(new AppointmentBook(
 	"Futsal", 
 	"Rose City Futsal", 
-	"Feb. 4, 9:20 p.m.", 
+	2014, 1, 4, 
 	"Ian, Erin, Daner, Alex, Renee"
 	));
 bikepubcrawl = appointmentMaker.add(new AppointmentBook(
 	"Bike Pub Crawl", 
 	"Burnside Brewing", 
-	"Feb. 7, 6 p.m.", 
+	2014, 1, 7,
 	"Glen, Ryan, Craig, Ian"
 	));
 
 appointmentMaker.cancel(homework);
-appointmentMaker.reschedule("Bike Pub Crawl", "Feb. 8, 5 p.m.")
+appointmentMaker.reschedule("Bike Pub Crawl", 2014, 1, 8)
 appointmentMaker.list();
 
 
