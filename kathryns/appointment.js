@@ -1,25 +1,9 @@
-
-
-// Advanced Assignment
-
-// Dig into the functionality of Javascript's Date object. Add the following abilities to your AppointmentBook:
-// return a list of all appointments for a given date
-// return a list of all appointments for a range of dates
-// return a list of all appointments for a given month
-// These functions should return an array of Appointment objects.
-
-// var appointment = {
-//   description: "",
-//   location: "",
-//   date: new Date(), // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
-//   attendees: []
-// };
-
 //Appointment constructor defining new appointment object
 function Appointment (apptdescription, location, date, attendees) {
   this.apptdescription = apptdescription;
   this.location = location;
-  this.date = new Date(date);
+  // this.date = new Date(date);
+  this.date = (date instanceof Date) ? date : new Date();
   this.attendees = attendees;
   this.id = Math.floor(Math.random() * 1000);
   if(!(this instanceof Appointment))
@@ -50,7 +34,6 @@ AppointmentBook.prototype.cancel = function (apptID) {
 };
 
 //Reschedules an appointment
-//I haven't been able to get my reschedule to work, I don't appear to be referencing my appointments object
 AppointmentBook.prototype.reschedule = function (appt,date,newDate) {
     var i = 0;
     this.appointments.forEach(function (item, index) {
@@ -61,10 +44,7 @@ AppointmentBook.prototype.reschedule = function (appt,date,newDate) {
     var index = this.appointments.indexOf(appt);
       if (index >= 0) {
       this.appointments[i].date = newDate;
-      console.log(date + appointments[i] + newDate);
       }
-    //this is a test to see what I'm referencing, but it appears that I'm not referencing the right object
-    //Have any hints?
 };
 
 //Lists existing appointments
@@ -74,27 +54,47 @@ AppointmentBook.prototype.list = function () {
       });
 };
 
+//Lists an appointment on specific date
+AppointmentBook.prototype.listByDate = function (day, month) {
+    var listDuringDate = [];
+  this.appointments.forEach(function (appt) {
+    if (appt.date.getDate() === day.getDate() && appt.date.getMonth() === month.getMonth())
+      listDuringDate.push(appt);
+  });
+  return listDuringDate;
+};
+
 //Lists appointments on specific date or date range
 AppointmentBook.prototype.listByDates = function (beginDate, endDate) {
-
+  var listOfAppointments = [];
+  this.appointments.forEach(function (appt) {
+    if (appt.date.getTime() >= beginDate.getTime() && appt.date.getTime() <= endDate.getTime() )
+      listOfAppointments.push(appt);
+  });
+  return listOfAppointments;
 };
 
 
 //Lists appointments during specified month
 AppointmentBook.prototype.listByMonth = function (month) {
-
+    var listDuringMonth = [];
+  this.appointments.forEach(function (appt) {
+    if (appt.date.getMonth() === month.getMonth())
+      listDuringMonth.push(appt);
+  });
+  return listDuringMonth;
 };
 
 var appointmentBook = new AppointmentBook(); 
 
 var appointments = [ 
-  new Appointment("Girl's Night", "Coalition", "February 8, 2014 09:00 pm", ["Andrea", "Lauren"]),
-  new Appointment("Brunch", "Broeder", "February 9, 2014 10:00 am", ["Todd"]),
-  new Appointment("Snowboarding", "Meadows", "February 15, 2014, 8:00 am", ["Barnes"]),
-  new Appointment("Wine and Cheese Night", "Wine Up on Williams", "February 28, 2014, 6:00 pm", ["Kristen"]),
-  new Appointment("JS Class", "Burnside Digital", "February 5, 2014, 6:00 pm", ["JS Class"]),
-  new Appointment("UX Meetup", "PDX", "March 10, 2014, 6:00 pm", ["Peeps"]),
-  new Appointment("Coffee", "Stumptown", "March 28, 2014, 8:00 am", ["Jason"])
+  new Appointment("Girl's Night", "Coalition", new Date(2014, 2, 12, 19, 0), ["Andrea", "Lauren"]),
+  new Appointment("Brunch", "Broeder", new Date(2014, 2, 15, 9, 30), ["Todd"]),
+  new Appointment("Snowboarding", "Meadows", new Date(2014, 2, 22, 9, 30), ["Barnes"]),
+  new Appointment("Wine and Cheese Night", "Wine Up on Williams", new Date(2014, 3, 15, 19, 30), ["Kristen"]),
+  new Appointment("JS Class", "Burnside Digital", new Date(2014, 2, 12, 18, 00), ["JS Class"]),
+  new Appointment("UX Meetup", "PDX", new Date(2014, 2, 20, 9, 30), ["Peeps"]),
+  new Appointment("Coffee", "Stumptown", new Date(2014, 3, 2, 9, 30), ["Jason"])
 ];
 
 //Adds new appointments to appointmentBook
@@ -107,13 +107,19 @@ appointmentBook.cancel(appointments[3]);
 appointmentBook.cancel(appointments[6]);
 
 //Reschedule 2nd appointment
-appointmentBook.reschedule(appointments[1],"February 8, 2014 09:00 pm","March 10, 2014, 10:00 am");
+appointmentBook.reschedule(appointments[1],new Date(2014, 1, 14, 9, 30),new Date(2014, 1, 14, 9, 30));
 
 //List appointments
 appointmentBook.list();
 
 //Lists appointments on a given date
+//The value returned by getMonth is an integer between 0 and 11. 0 corresponds to January, 1 to February, and so on.
+console.log(appointmentBook.listByDate(new Date(2014, 2, 12), new Date(2014, 2)));
 
 //Lists appointments for a date range
+console.log(appointmentBook.listByDates(new Date(2014, 1, 14, 9, 30), new Date(2014, 3, 14, 9, 30)));
 
 //Lists of appointments for a given month
+//The value returned by getMonth is an integer between 0 and 11. 0 corresponds to January, 1 to February, and so on.
+console.log(appointmentBook.listByMonth(new Date(2014, 2)));
+
